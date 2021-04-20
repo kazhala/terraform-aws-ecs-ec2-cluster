@@ -1,11 +1,11 @@
 variable "vpc_id" {
   type        = string
-  description = "The ID of the VPC to deploy this cluster."
+  description = "The ID of the VPC to deploy this ECS cluster."
 }
 
 variable "subnets" {
   type        = list(string)
-  description = "List of subnet ids to deploy the ecs cluster. This should be public subnet as the ECS agent require internet access."
+  description = "List of subnet ids to deploy the ECS cluster. This should be public subnet or equivalent as the ECS agent require internet access."
 }
 
 variable "cluster_name" {
@@ -16,7 +16,7 @@ variable "cluster_name" {
 variable "security_groups" {
   default     = []
   type        = list(string)
-  description = "List of security group arns to attach to the ECS cluster instance."
+  description = "List of Security Group arns to attach to the ECS cluster EC2 instance."
 }
 
 variable "instance_type" {
@@ -52,13 +52,13 @@ variable "health_check_type" {
 variable "load_balancers" {
   default     = []
   type        = list(string)
-  description = "List of ELB to attach to the cluster, for ALB use target_group_arns."
+  description = "List of ELB names to attach to the cluster, for ALB use target_group_arns."
 }
 
 variable "target_group_arns" {
   default     = []
   type        = list(string)
-  description = "List of target groups to attach to the cluster, for ELB use load_balancers."
+  description = "List of Target Groups to attach to the cluster, for ELB use load_balancers."
 }
 
 variable "health_check_grace_period" {

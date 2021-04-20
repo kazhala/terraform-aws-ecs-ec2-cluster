@@ -65,6 +65,6 @@ resource "aws_autoscaling_group" "ecs_asg" {
   }
 }
 
-resource "aws_ecs_cluster" "ecs_cluster" {
+resource "aws_ecs_cluster" "cluster" {
   name = var.cluster_name
 }
