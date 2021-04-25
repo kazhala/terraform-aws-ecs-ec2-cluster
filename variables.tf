@@ -81,6 +81,6 @@ variable "health_check_grace_period" {
 
 variable "additional_tags" {
   default     = {}
-  description = "Additional resource tags. {key = \"key\", value = \"value\"}"
   type        = map(string)
+  description = "Additional resource tags. {\"key\" = \"value\"}"
 }

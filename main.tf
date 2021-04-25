@@ -72,8 +72,8 @@ resource "aws_autoscaling_group" "ecs_asg" {
   dynamic "tag" {
     for_each = var.additional_tags
     content {
-      key                 = tag.value.key
-      value               = tag.value.value
+      key                 = tag.key
+      value               = tag.value
       propagate_at_launch = true
     }
   }
