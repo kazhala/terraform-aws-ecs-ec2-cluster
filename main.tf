@@ -82,7 +82,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   }
 }
 
-resource "aws_ecs_cluster" "main" {
+resource "aws_ecs_cluster" "this" {
   name = var.name
 
   tags = merge(
