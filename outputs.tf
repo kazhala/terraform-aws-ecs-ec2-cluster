@@ -14,11 +14,11 @@ output "asg_arn" {
 }
 
 output "cluster_id" {
-  value       = aws_ecs_cluster.cluster.id
+  value       = aws_ecs_cluster.main.id
   description = "ECS Cluster id."
 }
 
 output "cluster_arn" {
-  value       = aws_ecs_cluster.cluster.arn
+  value       = aws_ecs_cluster.main.arn
   description = "ECS Cluster arn."
 }

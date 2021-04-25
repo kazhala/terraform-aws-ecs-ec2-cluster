@@ -14,7 +14,7 @@ variable "cluster_name" {
 }
 
 variable "security_groups" {
-  default     = []
+  default     = null
   type        = list(string)
   description = "List of Security Group arns to attach to the ECS cluster EC2 instance."
 }
@@ -23,6 +23,18 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
   description = "ECS cluster EC2 instance type."
+}
+
+variable "additional_user_data" {
+  default     = ""
+  type        = string
+  description = "Additional user data to apply to the ECS instance Launch Configuration."
+}
+
+variable "image_id" {
+  default     = null
+  type        = string
+  description = "ECS instance image id. If not provided, the latest Linux Amazon ECS-optimized AMI will be used."
 }
 
 variable "max_size" {
@@ -50,13 +62,13 @@ variable "health_check_type" {
 }
 
 variable "load_balancers" {
-  default     = []
+  default     = null
   type        = list(string)
   description = "List of ELB names to attach to the cluster, for ALB use target_group_arns."
 }
 
 variable "target_group_arns" {
-  default     = []
+  default     = null
   type        = list(string)
   description = "List of Target Groups to attach to the cluster, for ELB use load_balancers."
 }

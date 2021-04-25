@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.0"
-    }
-  }
-}
-
 data "aws_iam_policy_document" "ecs_agent" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -38,24 +29,38 @@ data "aws_ssm_parameter" "ecs_ami" {
 }
 
 resource "aws_launch_configuration" "ecs_launch_config" {
-  image_id             = jsondecode(data.aws_ssm_parameter.ecs_ami.value).image_id
-  name_prefix          = "${var.cluster_name}-launch-config-"
+  name_prefix = "${var.cluster_name}-"
+
+  instance_type        = var.instance_type
+  image_id             = var.image_id == null ? jsondecode(data.aws_ssm_parameter.ecs_ami.value).image_id : var.image_id
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   security_groups      = var.security_groups
-  user_data            = "#!/bin/bash\necho ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config"
-  instance_type        = var.instance_type
+
+  user_data = <<EOF
+#!/bin/bash
+echo ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config
+${var.additional_user_data}
+EOF
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  name_prefix               = "${var.cluster_name}-ecs-cluster-asg-"
-  vpc_zone_identifier       = var.subnets
-  launch_configuration      = aws_launch_configuration.ecs_launch_config.name
-  max_size                  = var.max_size
-  min_size                  = var.min_size
-  desired_capacity          = var.desired_capacity
+  name_prefix = "ecs-${var.cluster_name}-"
+
+  vpc_zone_identifier  = var.subnets
+  launch_configuration = aws_launch_configuration.ecs_launch_config.name
+
+  max_size         = var.max_size
+  min_size         = var.min_size
+  desired_capacity = var.desired_capacity
+
+  target_group_arns = var.target_group_arns
+  load_balancers    = var.load_balancers
+
   health_check_type         = var.health_check_type
-  target_group_arns         = var.target_group_arns != [] ? var.target_group_arns : null
-  load_balancers            = var.load_balancers != [] ? var.load_balancers : null
   health_check_grace_period = var.health_check_grace_period
 
   tag {
@@ -63,8 +68,16 @@ resource "aws_autoscaling_group" "ecs_asg" {
     value               = "${var.cluster_name}-ecs-cluster"
     propagate_at_launch = true
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-resource "aws_ecs_cluster" "cluster" {
+resource "aws_ecs_cluster" "main" {
   name = var.cluster_name
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
