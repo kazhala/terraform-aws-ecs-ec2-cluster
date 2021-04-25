@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "ecs_agent" {
 }
 
 resource "aws_iam_role" "ecs_agent" {
-  name_prefix        = "${var.cluster_name}-ecs-cluster-agent-"
+  name_prefix        = "ecs-agent-${var.cluster_name}-"
   assume_role_policy = data.aws_iam_policy_document.ecs_agent.json
 }
 
@@ -20,7 +20,7 @@ resource "aws_iam_role_policy_attachment" "ecs_agent" {
 }
 
 resource "aws_iam_instance_profile" "ecs_agent" {
-  name = "${var.cluster_name}-ecs-cluster-agent-"
+  name = aws_iam_role.ecs_agent.name
   role = aws_iam_role.ecs_agent.name
 }
 
@@ -65,8 +65,17 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
   tag {
     key                 = "Name"
-    value               = "${var.cluster_name}-ecs-cluster"
+    value               = "ecs-${var.cluster_name}"
     propagate_at_launch = true
+  }
+
+  dynamic "tag" {
+    for_each = var.additional_tags
+    content {
+      key                 = tag.value.key
+      value               = tag.value.value
+      propagate_at_launch = true
+    }
   }
 
   lifecycle {
@@ -76,6 +85,13 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
 resource "aws_ecs_cluster" "main" {
   name = var.cluster_name
+
+  tags = merge(
+    var.additional_tags,
+    {
+      "Name" = "${var.cluster_name}"
+    }
+  )
 
   lifecycle {
     create_before_destroy = true

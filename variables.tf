@@ -78,3 +78,9 @@ variable "health_check_grace_period" {
   type        = number
   description = "Grace period between each scaling activity for EC2 instances in the ECS cluster."
 }
+
+variable "additional_tags" {
+  default     = {}
+  description = "Additional resource tags. {key = \"key\", value = \"value\"}"
+  type        = map(string)
+}
