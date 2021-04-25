@@ -14,10 +14,10 @@ resource "aws_iam_role" "ecs_agent" {
   assume_role_policy = data.aws_iam_policy_document.ecs_agent.json
 
   tags = merge(
-    var.additional_tags,
     {
       Name = "ecs-${var.cluster_name}"
-    }
+    },
+    var.additional_tags
   )
 }
 
@@ -94,10 +94,10 @@ resource "aws_ecs_cluster" "main" {
   name = var.cluster_name
 
   tags = merge(
-    var.additional_tags,
     {
       "Name" = "${var.cluster_name}"
-    }
+    },
+    var.additional_tags
   )
 
   lifecycle {
