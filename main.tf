@@ -10,14 +10,14 @@ data "aws_iam_policy_document" "ecs_agent" {
 }
 
 resource "aws_iam_role" "ecs_agent" {
-  name_prefix        = "ecs-agent-${var.cluster_name}-"
+  name_prefix        = "ecs-agent-${var.name}-"
   assume_role_policy = data.aws_iam_policy_document.ecs_agent.json
 
   tags = merge(
     {
-      Name = "ecs-${var.cluster_name}"
+      Name = "ecs-${var.name}"
     },
-    var.additional_tags
+    var.tags
   )
 }
 
@@ -36,7 +36,7 @@ data "aws_ssm_parameter" "ecs_ami" {
 }
 
 resource "aws_launch_configuration" "ecs_launch_config" {
-  name_prefix = "${var.cluster_name}-"
+  name_prefix = "${var.name}-"
 
   instance_type        = var.instance_type
   image_id             = var.image_id == null ? jsondecode(data.aws_ssm_parameter.ecs_ami.value).image_id : var.image_id
@@ -45,17 +45,13 @@ resource "aws_launch_configuration" "ecs_launch_config" {
 
   user_data = <<EOF
 #!/bin/bash
-echo ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config
+echo ECS_CLUSTER=${var.name} >> /etc/ecs/ecs.config
 ${var.additional_user_data}
 EOF
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  name_prefix = "ecs-${var.cluster_name}-"
+  name_prefix = "ecs-${var.name}-"
 
   vpc_zone_identifier  = var.subnets
   launch_configuration = aws_launch_configuration.ecs_launch_config.name
@@ -72,35 +68,27 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
   tag {
     key                 = "Name"
-    value               = "ecs-${var.cluster_name}"
+    value               = "ecs-${var.name}"
     propagate_at_launch = true
   }
 
   dynamic "tag" {
-    for_each = var.additional_tags
+    for_each = var.tags
     content {
       key                 = tag.key
       value               = tag.value
       propagate_at_launch = true
     }
   }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_ecs_cluster" "main" {
-  name = var.cluster_name
+  name = var.name
 
   tags = merge(
     {
-      "Name" = "${var.cluster_name}"
+      "Name" = "${var.name}"
     },
-    var.additional_tags
+    var.tags
   )
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }

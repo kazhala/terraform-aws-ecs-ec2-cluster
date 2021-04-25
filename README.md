@@ -34,9 +34,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional resource tags to apply to applicable resources. Format: {"key" = "value"} | `map(string)` | `{}` | no |
 | <a name="input_additional_user_data"></a> [additional\_user\_data](#input\_additional\_user\_data) | Additional user data to apply to the ECS instance Launch Configuration. | `string` | `""` | no |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the ECS cluster. | `string` | n/a | yes |
 | <a name="input_desired_capacity"></a> [desired\_capacity](#input\_desired\_capacity) | Desired number of instances for the cluster. | `number` | `1` | no |
 | <a name="input_health_check_grace_period"></a> [health\_check\_grace\_period](#input\_health\_check\_grace\_period) | Grace period between each scaling activity for EC2 instances in the ECS cluster. | `number` | `300` | no |
 | <a name="input_health_check_type"></a> [health\_check\_type](#input\_health\_check\_type) | Health checking method, can be either ELB or EC2. | `string` | `"ELB"` | no |
@@ -45,8 +43,10 @@ No modules.
 | <a name="input_load_balancers"></a> [load\_balancers](#input\_load\_balancers) | List of ELB names to attach to the cluster, for ALB use target\_group\_arns. | `list(string)` | `null` | no |
 | <a name="input_max_size"></a> [max\_size](#input\_max\_size) | Maximum number of instances for the cluster. | `number` | `1` | no |
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | Minimum number of instances for the cluster. | `number` | `1` | no |
+| <a name="input_name"></a> [name](#input\_name) | Name of the ECS cluster. | `string` | n/a | yes |
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | List of Security Group arns to attach to the ECS cluster EC2 instance. | `list(string)` | `null` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnet ids to deploy the ECS cluster. This should be public subnet or equivalent as the ECS agent require internet access. | `list(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Additional resource tags to apply to applicable resources. Format: {"key" = "value"} | `map(string)` | `{}` | no |
 | <a name="input_target_group_arns"></a> [target\_group\_arns](#input\_target\_group\_arns) | List of Target Groups to attach to the cluster, for ELB use load\_balancers. | `list(string)` | `null` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of the VPC to deploy this ECS cluster. | `string` | n/a | yes |
 

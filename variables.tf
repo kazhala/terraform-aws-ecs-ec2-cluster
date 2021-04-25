@@ -8,7 +8,7 @@ variable "subnets" {
   description = "List of subnet ids to deploy the ECS cluster. This should be public subnet or equivalent as the ECS agent require internet access."
 }
 
-variable "cluster_name" {
+variable "name" {
   type        = string
   description = "Name of the ECS cluster."
 }
@@ -79,7 +79,7 @@ variable "health_check_grace_period" {
   description = "Grace period between each scaling activity for EC2 instances in the ECS cluster."
 }
 
-variable "additional_tags" {
+variable "tags" {
   default     = {}
   type        = map(string)
   description = "Additional resource tags to apply to applicable resources. Format: {\"key\" = \"value\"}"
