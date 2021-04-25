@@ -12,6 +12,13 @@ data "aws_iam_policy_document" "ecs_agent" {
 resource "aws_iam_role" "ecs_agent" {
   name_prefix        = "ecs-agent-${var.cluster_name}-"
   assume_role_policy = data.aws_iam_policy_document.ecs_agent.json
+
+  tags = merge(
+    var.additional_tags,
+    {
+      Name = "ecs-${var.cluster_name}"
+    }
+  )
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_agent" {
