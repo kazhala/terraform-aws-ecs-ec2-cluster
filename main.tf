@@ -36,6 +36,7 @@ data "aws_ssm_parameter" "ecs_ami" {
 }
 
 resource "aws_launch_configuration" "ecs" {
+  # checkov:skip=CKV_AWS_8:Optional encryption.
   name_prefix = "${var.name}-"
 
   instance_type        = var.instance_type
