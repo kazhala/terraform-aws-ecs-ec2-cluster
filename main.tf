@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "ecs_agent" {
+data "aws_iam_policy_document" "ecs_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "ecs_agent" {
 
 resource "aws_iam_role" "ecs_agent" {
   name_prefix        = "ecs-agent-${var.name}-"
-  assume_role_policy = data.aws_iam_policy_document.ecs_agent.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
 
   tags = merge(
     {
@@ -35,7 +35,7 @@ data "aws_ssm_parameter" "ecs_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended"
 }
 
-resource "aws_launch_configuration" "ecs_launch_config" {
+resource "aws_launch_configuration" "ecs" {
   name_prefix = "${var.name}-"
 
   instance_type        = var.instance_type
@@ -48,13 +48,17 @@ resource "aws_launch_configuration" "ecs_launch_config" {
 echo ECS_CLUSTER=${var.name} >> /etc/ecs/ecs.config
 ${var.additional_user_data}
 EOF
+
+  root_block_device {
+    encrypted = var.encrypted
+  }
 }
 
-resource "aws_autoscaling_group" "ecs_asg" {
+resource "aws_autoscaling_group" "ecs" {
   name_prefix = "ecs-${var.name}-"
 
   vpc_zone_identifier  = var.subnets
-  launch_configuration = aws_launch_configuration.ecs_launch_config.name
+  launch_configuration = aws_launch_configuration.ecs.name
 
   max_size         = var.max_size
   min_size         = var.min_size
@@ -83,7 +87,13 @@ resource "aws_autoscaling_group" "ecs_asg" {
 }
 
 resource "aws_ecs_cluster" "this" {
+  # checkov:skip=CKV_AWS_65:Optional container insights.
   name = var.name
+
+  setting {
+    name  = "containerInsights"
+    value = var.container_insights
+  }
 
   tags = merge(
     {

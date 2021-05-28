@@ -1,24 +1,24 @@
 output "asg_id" {
-  value       = aws_autoscaling_group.ecs_asg.id
-  description = "Auto Scaling Group id."
+  description = "The ID of the Auto Scaling Group."
+  value       = aws_autoscaling_group.ecs.id
 }
 
 output "asg_name" {
-  value       = aws_autoscaling_group.ecs_asg.name
-  description = "Auto Scaling Group name."
+  description = "The Name of the Auto Scaling Group."
+  value       = aws_autoscaling_group.ecs.name
 }
 
 output "asg_arn" {
-  value       = aws_autoscaling_group.ecs_asg.arn
-  description = "Auto Scaling Group arn."
+  description = "The ARN of the Auto Scaling Group."
+  value       = aws_autoscaling_group.ecs.arn
 }
 
 output "cluster_id" {
+  description = "The ID of the ECS cluster."
   value       = aws_ecs_cluster.this.id
-  description = "ECS Cluster id."
 }
 
 output "cluster_arn" {
+  description = "The ARN of the ECS cluster."
   value       = aws_ecs_cluster.this.arn
-  description = "ECS Cluster arn."
 }
