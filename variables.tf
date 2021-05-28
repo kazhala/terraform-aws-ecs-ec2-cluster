@@ -32,7 +32,7 @@ variable "instance_type" {
 variable "encrypted" {
   description = "Encrypt EC2 instance ebs volume."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "container_insights" {
@@ -74,7 +74,7 @@ variable "desired_capacity" {
 variable "health_check_type" {
   description = "Health checking method. Allowed values: ELB | EC2."
   type        = string
-  default     = "ELB"
+  default     = "EC2"
 }
 
 variable "load_balancers" {
