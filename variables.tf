@@ -17,28 +17,34 @@ variable "name" {
   type        = string
 }
 
-variable "security_groups" {
-  description = "List of Security Group ARNs to attach to the ECS cluster EC2 instance."
-  type        = list(string)
-  default     = null
-}
-
 variable "instance_type" {
   description = "The EC2 instance type to launch for the ECS cluster."
   type        = string
   default     = "t3.micro"
 }
 
-variable "encrypted" {
+variable "root_volume_encrypted" {
   description = "Encrypt EC2 instance ebs volume."
   type        = bool
-  default     = false
+  default     = true
+}
+
+variable "root_volume_size" {
+  description = "Size of the root volume."
+  type        = number
+  default     = 30
+}
+
+variable "root_volume_device_name" {
+  description = "Name of the root device. /dev/sda1 for normal linux and /dev/xvda for amazon linux."
+  type        = string
+  default     = "/dev/xvda"
 }
 
 variable "container_insights" {
   description = "Enable ECS container insights. Allowed values: enabled | disabled."
   type        = string
-  default     = "disabled"
+  default     = "enabled"
 }
 
 variable "additional_user_data" {

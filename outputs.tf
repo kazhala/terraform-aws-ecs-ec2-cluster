@@ -1,24 +1,40 @@
-output "asg_id" {
-  description = "The ID of the Auto Scaling Group."
-  value       = aws_autoscaling_group.ecs.id
+output "aws_iam_role" {
+  description = "Outputs of the iam role created."
+
+  value = {
+    ecs_agent = aws_iam_role.ecs_agent
+  }
 }
 
-output "asg_name" {
-  description = "The Name of the Auto Scaling Group."
-  value       = aws_autoscaling_group.ecs.name
+output "aws_iam_instance_profile" {
+  description = "Outputs of the instane profile created."
+
+  value = {
+    ecs_agent = aws_iam_instance_profile.ecs_agent
+  }
 }
 
-output "asg_arn" {
-  description = "The ARN of the Auto Scaling Group."
-  value       = aws_autoscaling_group.ecs.arn
+output "aws_launch_template" {
+  description = "Outputs of the launch template."
+  sensitive   = true
+
+  value = {
+    ecs = aws_launch_template.ecs
+  }
 }
 
-output "cluster_id" {
-  description = "The ID of the ECS cluster."
-  value       = aws_ecs_cluster.this.id
+output "aws_autoscaling_group" {
+  description = "Outputs of the ASG."
+
+  value = {
+    ecs = aws_autoscaling_group.ecs
+  }
 }
 
-output "cluster_arn" {
-  description = "The ARN of the ECS cluster."
-  value       = aws_ecs_cluster.this.arn
+output "aws_ecs_cluster" {
+  description = "Outputs of the ECS cluster."
+
+  value = {
+    this = aws_ecs_cluster.this
+  }
 }
