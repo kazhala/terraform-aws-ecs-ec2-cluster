@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_agent" {
-  name_prefix        = "${substr("ecs-${var.name}", 0, 37)}-"
+  name_prefix        = "${substr("${var.name}-ecs-agent-", 0, 37)}-"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
 
   tags = merge({ Name = "ecs-${var.name}" }, var.tags)
@@ -72,7 +72,7 @@ resource "aws_launch_template" "ecs" {
 }
 
 resource "aws_autoscaling_group" "ecs" {
-  name_prefix = "ecs-${var.name}-"
+  name_prefix = "${var.name}-ecs-"
 
   vpc_zone_identifier = var.subnets
 
