@@ -43,9 +43,10 @@ data "aws_ssm_parameter" "ecs_ami" {
 resource "aws_launch_template" "ecs" {
   name_prefix = "${var.name}-"
 
-  instance_type = var.instance_type
-  image_id      = var.image_id == null ? jsondecode(data.aws_ssm_parameter.ecs_ami.value).image_id : var.image_id
-  user_data     = base64encode(local.user_data)
+  instance_type          = var.instance_type
+  image_id               = var.image_id == null ? jsondecode(data.aws_ssm_parameter.ecs_ami.value).image_id : var.image_id
+  user_data              = base64encode(local.user_data)
+  vpc_security_group_ids = var.vpc_security_group_ids
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_agent.name
@@ -55,7 +56,6 @@ resource "aws_launch_template" "ecs" {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
-
 
   block_device_mappings {
     device_name = var.root_volume_device_name

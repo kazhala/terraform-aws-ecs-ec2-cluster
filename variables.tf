@@ -12,6 +12,12 @@ EOF
   type = list(string)
 }
 
+variable "vpc_security_group_ids" {
+  description = "List of security group to attach the instance."
+  type        = list(string)
+  default     = []
+}
+
 variable "name" {
   description = "The Name of the ECS cluster."
   type        = string
